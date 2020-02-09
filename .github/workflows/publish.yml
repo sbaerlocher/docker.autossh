@@ -1,0 +1,30 @@
+name: Publish
+
+on: [release]
+
+jobs:
+  test_action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Publish docker hub
+        uses: tinact/docker.image@1.0.0
+        with:
+          image_name: sbaerlocher/autossh
+          image_tag: ${{ github.ref }}
+          dockerfile: .
+          registry: registry.hub.docker.com
+          registry_username: sbaerlocher
+          registry_password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Publish github pkg
+        uses: tinact/docker.image@1.0.0
+        with:
+          image_name: autossh
+          image_tag: ${{ github.ref }}
+          dockerfile: .
+          registry: docker.pkg.github.com/sbaerlocher/docker.autossh
+          registry_username: sbaerlocher
+          registry_password: ${{ secrets.GITHUB_TOKEN }}

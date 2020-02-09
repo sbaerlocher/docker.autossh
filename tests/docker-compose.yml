@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ssh:
+    build: ../.
+    environment:
+      SSH_TUNNEL_HOST:
+      SSH_REMOTE_HOST:
+      SSH_LOCAL_PORT:
+      SSH_REMOTE_PORT:
+      SSH_HOSTUSER:
+      SSH_KEY: |
