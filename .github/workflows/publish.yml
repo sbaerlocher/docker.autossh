@@ -1,6 +1,8 @@
 name: Publish
 
-on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   test_action:
@@ -9,11 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - uses: olegtarasov/get-tag@v1
+        id: tag
+
       - name: Publish docker hub
         uses: tinact/docker.image@1.0.0
         with:
           image_name: sbaerlocher/autossh
-          image_tag: ${{ github.ref }}
+          image_tag: ${{ steps.tag.outputs.tag }}
           dockerfile: .
           registry: registry.hub.docker.com
           registry_username: sbaerlocher
@@ -23,7 +28,7 @@ jobs:
         uses: tinact/docker.image@1.0.0
         with:
           image_name: autossh
-          image_tag: ${{ github.ref }}
+          image_tag: ${{ steps.tag.outputs.tag }}
           dockerfile: .
           registry: docker.pkg.github.com/sbaerlocher/docker.autossh
           registry_username: sbaerlocher
