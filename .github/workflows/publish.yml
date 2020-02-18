@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  test_action:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +30,35 @@ jobs:
           image_name: autossh
           image_tag: ${{ steps.tag.outputs.tag }}
           dockerfile: .
+          registry: docker.pkg.github.com/sbaerlocher/docker.autossh
+          registry_username: sbaerlocher
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  latest:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Docker image semver latest
+        uses: tinact/docker.image-latest@1.0.0
+        id: version
+        with:
+          image_name: sbaerlocher/autossh
+
+      - name: Docker image retag docker hub
+        uses: tinact/docker.image-retag@1.0.1
+        with:
+          image_name: sbaerlocher/autossh
+          image_old_tag: ${{ steps.version.outputs.latest }}
+          registry: registry.hub.docker.com
+          registry_username: sbaerlocher
+          registry_password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Docker image retag github pkg
+        uses: tinact/docker.image-retag@1.0.1
+        with:
+          image_name: autossh
+          image_old_tag: ${{ steps.version.outputs.latest }}
           registry: docker.pkg.github.com/sbaerlocher/docker.autossh
           registry_username: sbaerlocher
           registry_password: ${{ secrets.GITHUB_TOKEN }}
