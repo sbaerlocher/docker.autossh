@@ -1,4 +1,4 @@
-FROM alpine:3.12.1
+FROM alpine:3.16.0
 
 LABEL "maintainer"="Simon Baerlocher <s.baerlocher@sbaerlocher.ch>" \
 	"org.opencontainers.image.authors"="Simon Baerlocher <s.baerlocher@sbaerlocher.ch>" \
